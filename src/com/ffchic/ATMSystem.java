@@ -140,7 +140,7 @@ public class ATMSystem {
             switch (command) {
                 case 1:
                     //查询账户
-                    showAccount(acc);
+                    showAccount(acc, sc);
                     break;
                 case 2:
                     //存款
@@ -156,7 +156,8 @@ public class ATMSystem {
                     break;
                 case 6:
                     //退出
-                    break;
+                    System.out.println("退出系统，欢迎下次光临");
+                    return;
                 case 7:
                     //注销账户
                     break;
@@ -166,11 +167,18 @@ public class ATMSystem {
         }
 
     }
-    public static void showAccount(Account acc){
+
+    /**
+     * 查询账户
+     * @param acc
+     * @param sc
+     */
+    public static void showAccount(Account acc, Scanner sc){
         System.out.println("账户卡号为："+acc.getCardId());
         System.out.println("账户用户名为："+acc.getUserName());
         System.out.println("账户余额为："+acc.getMoney());
         System.out.println("账户剩余额度为："+acc.getQuotaMoney());
+        sc.next();
     }
 
     /**
