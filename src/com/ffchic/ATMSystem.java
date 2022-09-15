@@ -1,5 +1,6 @@
 package com.ffchic;
 
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -23,11 +24,12 @@ public class ATMSystem {
         while (true) {
             System.out.println("1、登录");
             System.out.println("2、开户");
-            System.out.println("请输入您想做的操作:");
+            System.out.print("请输入您想做的操作:");
             int command = sc.nextInt();
             switch (command) {
                 case 1:
                     //登录
+                    login(accounts, sc);
                     break;
                 case 2:
                     //开户
@@ -38,23 +40,61 @@ public class ATMSystem {
             }
         }
     }
+
+    /**
+     * 用户登录
+     * @param accounts
+     * @param sc
+     */
+    public static void login(ArrayList<Account> accounts, @NotNull Scanner sc){
+        if (accounts.size() < 1){
+            System.out.println("当前没有账户，请先进行注册");
+            return;
+        }
+        System.out.println("=======进行用户登录=======");
+        Account account;
+        String cardId;
+        // 1、用户输入卡号，判断卡号是否存在
+        while (true){
+            System.out.print("请输入登录卡号");
+            cardId = sc.next();
+            account = getAccountByCardId(cardId,accounts);
+            if (account!=null){
+                break;
+            }else{
+                System.out.println("输入的卡号不存在，请重新输入卡号");
+            }
+        }
+        // 2、用户输入密码，判断密码是否正确
+        while (true){
+            System.out.print("请输入密码：");
+            String password = sc.next();
+            if (password.equals(account.getPassWord())){
+                break;
+            }else{
+                System.out.println("密码输入错误，请重新输入");
+            }
+        }
+        System.out.println("登录成功！");
+        showUserCommand(account, sc);
+    }
     /**
      * * 注册
      * @param accounts 账户集合对象
      * @param sc  扫描器
      */
-    public static void register(ArrayList<Account> accounts, Scanner sc) {
+    public static void register(ArrayList<Account> accounts, @NotNull Scanner sc) {
         // 2.键盘录入 姓名 密码 确认密码
         System.out.println("=======用户开户=======");
-        System.out.println("请输入开户名:");
+        System.out.print("请输入开户名:");
         String name = sc.next();
         String password;
         String okpassword;
         while (true){
-            System.out.println("请输入密码:");
+            System.out.print("请输入密码:");
             password = sc.next();
 
-            System.out.println("请输入确认密码:");
+            System.out.print("请输入确认密码:");
             okpassword = sc.next();
             if (!password.equals(okpassword)){
                 System.out.println("两次密码必须一致----");
@@ -67,7 +107,7 @@ public class ATMSystem {
         String carId = createCardId(accounts);
 
         // 4、用户输入限额
-        System.out.println("请您输入当日限额----");
+        System.out.print("请您输入当日限额----");
         double quotaMoney = sc.nextDouble();
 
 
@@ -76,8 +116,61 @@ public class ATMSystem {
         // 5.账户对象添加到集合中去
         accounts.add(account);
 
-        System.out.println("创建成功您的卡号为："+account.getCardId()+"请返回首页登录");
+        System.out.println("创建成功您的卡号为："+account.getCardId()+" 请返回首页登录");
 
+    }
+
+    /**
+     * 进入用户命令行
+     * @param acc
+     * @param sc
+     */
+    public static void showUserCommand(Account acc, @NotNull Scanner sc){
+        while (true){
+            System.out.println("=======用户操作页面=======");
+            System.out.println("1、查询账户");
+            System.out.println("2、存款");
+            System.out.println("3、取款");
+            System.out.println("4、转账");
+            System.out.println("5、修改密码");
+            System.out.println("6、退出");
+            System.out.println("7、注销账户");
+            System.out.print("请输入要操作的内容：");
+            int command = sc.nextInt();
+            switch (command) {
+                case 1:
+                    //查询账户
+                    showAccount(acc);
+                    break;
+                case 2:
+                    //存款
+                    break;
+                case 3:
+                    //取款
+                    break;
+                case 4:
+                    //转账
+                    break;
+                case 5:
+                    //修改密码
+                    break;
+                case 6:
+                    //退出
+                    break;
+                case 7:
+                    //注销账户
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    }
+    public static void showAccount(Account acc){
+        System.out.println("账户卡号为："+acc.getCardId());
+        System.out.println("账户用户名为："+acc.getUserName());
+        System.out.println("账户余额为："+acc.getMoney());
+        System.out.println("账户剩余额度为："+acc.getQuotaMoney());
     }
 
     /**
