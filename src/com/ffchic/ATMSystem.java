@@ -1,4 +1,4 @@
-package com.papaya;
+package com.ffchic;
 
 import java.util.ArrayList;
 import java.util.Scanner;

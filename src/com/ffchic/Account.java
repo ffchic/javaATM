@@ -1,4 +1,4 @@
-package com.papaya;
+package com.ffchic;
 
 /**
  * 账户类
