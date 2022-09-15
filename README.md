@@ -1,4 +1,4 @@
-java联系小项目 ATM机
+java练习小项目 ATM机
 
 <img url=".\功能需求.png">
 
