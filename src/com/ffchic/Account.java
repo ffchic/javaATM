@@ -13,11 +13,10 @@ public class Account {
     public Account(){
 
     }
-    public Account(String cardId, String userName, String passWord, double money, double quotaMoney) {
+    public Account(String cardId, String userName, String passWord, double quotaMoney) {
         this.cardId = cardId;
         this.userName = userName;
         this.passWord = passWord;
-        this.money = money;
         this.quotaMoney = quotaMoney;
     }
 
