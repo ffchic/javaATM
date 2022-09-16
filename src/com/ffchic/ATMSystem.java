@@ -78,6 +78,7 @@ public class ATMSystem {
         System.out.println("登录成功！");
         showUserCommand(account, sc);
     }
+
     /**
      * * 注册
      * @param accounts 账户集合对象
@@ -144,6 +145,7 @@ public class ATMSystem {
                     break;
                 case 2:
                     //存款
+                    depositMoney(acc,sc);
                     break;
                 case 3:
                     //取款
@@ -165,7 +167,49 @@ public class ATMSystem {
                     break;
             }
         }
+    }
 
+    /**
+     * 存款
+     * @param acc
+     */
+    public static void depositMoney(Account acc, Scanner sc){
+        System.out.println("存钱操作");
+        System.out.print("请输入存款金额：");
+        double money = sc.nextDouble();
+
+        acc.setMoney(acc.getMoney() + money);
+        System.out.println("-----存钱成功-----");
+        showAccount(acc, sc);
+    }
+
+    /**
+     * 取款
+     * @param acc
+     * @param sc
+     */
+    public static void drawMoney(Account acc, Scanner sc){
+        System.out.println("=======取款操作=======");
+        if (acc.getMoney() >= 100){
+            while (true) {
+                System.out.print("请输入取款金额");
+                double money = sc.nextDouble();
+                if (money > acc.getQuotaMoney()){
+                    System.out.println("超出当日限额，少取一点.当前限额为："+acc.getQuotaMoney());
+                }else{
+                    if(money >= acc.getMoney()){
+                        //取钱
+                        acc.setMoney(acc.getMoney()-money);
+                        System.out.println("取钱成功，当前账户还剩余："+acc.getMoney());
+                        return;
+                    }else {
+                        System.out.println("余额不足，请重新输入");
+                    }
+                }
+            }
+        }else {
+            System.out.println("余额小于100元");
+        }
     }
 
     /**
