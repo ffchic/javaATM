@@ -76,7 +76,7 @@ public class ATMSystem {
             }
         }
         System.out.println("登录成功！");
-        showUserCommand(account, sc);
+        showUserCommand(account, sc, accounts);
     }
 
     /**
@@ -126,7 +126,7 @@ public class ATMSystem {
      * @param acc
      * @param sc
      */
-    public static void showUserCommand(Account acc, @NotNull Scanner sc){
+    public static void showUserCommand(Account acc, @NotNull Scanner sc, ArrayList<Account> accounts){
         while (true){
             System.out.println("=======用户操作页面=======");
             System.out.println("1、查询账户");
@@ -149,20 +149,24 @@ public class ATMSystem {
                     break;
                 case 3:
                     //取款
+                    drawMoney(acc, sc);
                     break;
                 case 4:
                     //转账
+                    transferMoney(acc, accounts, sc);
                     break;
                 case 5:
                     //修改密码
-                    break;
+                    updatePassword(acc, sc);
+                    return;
                 case 6:
                     //退出
                     System.out.println("退出系统，欢迎下次光临");
                     return;
                 case 7:
                     //注销账户
-                    break;
+                    logOut(accounts,acc,sc);
+                    return;
                 default:
                     break;
             }
@@ -212,6 +216,92 @@ public class ATMSystem {
         }
     }
 
+    /**
+     * 转账
+     * @param acc
+     * @param accounts
+     * @param sc
+     */
+    public static void transferMoney(Account acc, ArrayList<Account> accounts, Scanner sc) {
+        System.out.println("=======转账=======");
+        if (accounts.size()<2){
+            System.out.println("对不起，系统中无其他账户");
+            return;
+        }
+        while (true) {
+            System.out.print("请输入转账卡号：");
+            String receiveCardId = sc.next();
+            Account receiveAcc = getAccountByCardId(receiveCardId, accounts);
+            if (receiveAcc == null){
+                System.out.println("没有该账户");
+                continue;
+            }
+            if (receiveAcc.getCardId().equals(acc.getCardId())){
+                System.out.println("不能给自己转账");
+                continue;
+            }
+            String name = "*" + receiveAcc.getUserName().substring(1);
+            System.out.println("请你确认" + name + "用户名姓氏");
+            String preName = sc.next();
+            if (!receiveAcc.getUserName().startsWith(preName)){
+                System.out.println("输入错误");
+                continue;
+            }
+            System.out.print("请输入转账金额：");
+            double money = sc.nextDouble();
+            if (acc.getMoney() > money & acc.getQuotaMoney() > money){
+                acc.setMoney(acc.getMoney()-money);
+                receiveAcc.setMoney(receiveAcc.getMoney()+money);
+                System.out.println("转账成功");
+            }else {
+                System.out.println("余额不足或限额不足");
+
+            }
+
+        }
+    }
+
+    /**
+     * 修改密码
+     * @param acc
+     * @param sc
+     */
+    public static void updatePassword(Account acc, Scanner sc){
+        System.out.println("=======修改密码页面=======");
+        while (true) {
+            System.out.print("请输入旧密码：");
+            String oldPassword = sc.next();
+            if (!oldPassword.equals(acc.getPassWord())){
+                System.out.println("密码错误");
+                continue;
+            }
+            System.out.print("请输入新密码：");
+            String newPassword = sc.next();
+            System.out.print("请输入确认密码：");
+            String checkPassword = sc.next();
+            if (!newPassword.equals(checkPassword)){
+                System.out.println("两次密码不一致");
+            }
+            acc.setPassWord(newPassword);
+            System.out.println("修改成功");
+
+        }
+    }
+
+    /**
+     * 销户
+     * @param accounts
+     * @param acc
+     * @param sc
+     */
+    public static void logOut(ArrayList<Account> accounts, Account acc, Scanner sc ){
+        System.out.print("确认消除账户？（y/n)");
+        String yesOrNo = sc.next();
+        if (yesOrNo.equals("y")){
+            accounts.remove(acc);
+            System.out.println("销户成功");
+        }
+    }
     /**
      * 查询账户
      * @param acc
